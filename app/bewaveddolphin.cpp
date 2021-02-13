@@ -270,10 +270,10 @@ void BewavedDolphin::run()
         m_sc->updateAll();
         COMMENT("Setting the computed output values to the waveform results.", 3);
         int counter = m_inputs.size();
-        for (int out = 0; out < m_outputs.size(); ++out) {
-            int inSz = m_outputs[out]->inputSize();
+        for (const auto& m_output : m_outputs) {
+            int inSz = m_output->inputSize();
             for (int port = inSz - 1; port >= 0; --port) {
-                int value = static_cast<int>(m_outputs[out]->input(port)->value());
+                int value = static_cast<int>(m_output->input(port)->value());
                 COMMENT("out value: " << value, 0);
                 CreateElement(counter, itr, value, false);
                 counter++;
@@ -314,13 +314,13 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
         "Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two "
         "identical labels?",
         0);
-    for (int out = 0; out < m_outputs.size(); ++out) {
-        QString label = m_outputs[out]->getLabel();
+    for (const auto& m_output : m_outputs) {
+        QString label = m_output->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(m_outputs[out]->elementType());
+            label = ElementFactory::translatedName(m_output->elementType());
         }
-        for (int port = 0; port < m_outputs[out]->inputSize(); ++port) {
-            if (m_outputs[out]->inputSize() > 1) {
+        for (int port = 0; port < m_output->inputSize(); ++port) {
+            if (m_output->inputSize() > 1) {
                 output_labels.append(QString("%1_%2").arg(label).arg(port));
             } else {
                 output_labels.append(label);
