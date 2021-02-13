@@ -147,10 +147,10 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
         sc->updateAll();
         // Setting the computed output values to the waveform results vector.
         int counter = 0;
-        for (int out = 0; out < outputs.size(); ++out) {
-            int inSz = outputs[out]->inputSize();
+        for (const auto& output : outputs) {
+            int inSz = output->inputSize();
             for (int port = inSz - 1; port >= 0; --port) {
-                uchar val = outputs[out]->input(port)->value();
+                uchar val = output->input(port)->value();
                 results[counter][itr] = val;
                 counter++;
             }
@@ -171,12 +171,12 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
     outStream << "\n";
     // Writing the output values at each iteration to the output stream.
     int counter = 0;
-    for (int out = 0; out < outputs.size(); ++out) {
-        QString label = outputs[out]->getLabel();
+    for (const auto& output : outputs) {
+        QString label = output->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(outputs[out]->elementType());
+            label = ElementFactory::translatedName(output->elementType());
         }
-        int inSz = outputs[out]->inputSize();
+        int inSz = output->inputSize();
         for (int port = inSz - 1; port >= 0; --port) {
             for (int itr = 0; itr < num_iter; ++itr) {
                 outStream << static_cast<int>(results[counter][itr]);
@@ -269,14 +269,14 @@ void SimpleWaveform::showWaveform()
         "Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two "
         "identical labels?",
         0);
-    for (int out = 0; out < outputs.size(); ++out) {
-        QString label = outputs[out]->getLabel();
+    for (const auto& output : outputs) {
+        QString label = output->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(outputs[out]->elementType());
+            label = ElementFactory::translatedName(output->elementType());
         }
-        for (int port = 0; port < outputs[out]->inputSize(); ++port) {
+        for (int port = 0; port < output->inputSize(); ++port) {
             out_series.append(new QLineSeries(this));
-            if (outputs[out]->inputSize() > 1) {
+            if (output->inputSize() > 1) {
                 out_series.last()->setName(QString("%1_%2").arg(label).arg(port));
             } else {
                 out_series.last()->setName(label);
@@ -307,10 +307,10 @@ void SimpleWaveform::showWaveform()
         sc->updateAll();
         COMMENT("Setting the computed output values to the waveform results.", 3);
         int counter = 0;
-        for (int out = 0; out < outputs.size(); ++out) {
-            int inSz = outputs[out]->inputSize();
+        for (const auto& output : outputs) {
+            int inSz = output->inputSize();
             for (int port = inSz - 1; port >= 0; --port) {
-                float val = outputs[out]->input(port)->value() > 0;
+                float val = output->input(port)->value() > 0;
                 float offset = (out_series.size() - counter - 1) * 2 + 0.5;
                 out_series[counter]->append(itr, static_cast<qreal>(offset + val));
                 out_series[counter]->append(itr + 1, static_cast<qreal>(offset + val));
