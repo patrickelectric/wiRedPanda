@@ -656,8 +656,7 @@ void ChangeInputSZCommand::redo()
     QVector<GraphicElement *> serializationOrder;
     m_oldData.clear();
     QDataStream dataStream(&m_oldData, QIODevice::WriteOnly);
-    for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+    for (auto elm : m_elements) {
         elm->save(dataStream);
         serializationOrder.append(elm);
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
@@ -668,8 +667,7 @@ void ChangeInputSZCommand::redo()
             }
         }
     }
-    for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+    for (auto elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             while (!elm->input(in)->connections().isEmpty()) {
                 QNEConnection *conn = elm->input(in)->connections().front();
@@ -704,8 +702,7 @@ void ChangeInputSZCommand::undo()
     for (GraphicElement *elm : serializationOrder) {
         elm->load(dataStream, portMap, version);
     }
-    for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+    for (auto elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             QNEConnection *conn = ElementFactory::buildConnection();
             conn->load(dataStream, portMap);
