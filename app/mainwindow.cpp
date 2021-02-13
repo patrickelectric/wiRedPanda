@@ -722,15 +722,15 @@ void MainWindow::openRecentFile()
 
 void MainWindow::createRecentFileActions()
 {
-    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
-        recentFileActs[i] = new QAction(this);
-        recentFileActs[i]->setVisible(false);
-        connect(recentFileActs[i], &QAction::triggered, this, &MainWindow::openRecentFile);
-        ui->menuRecent_files->addAction(recentFileActs[i]);
+    for (auto recentFileAct : recentFileActs) {
+        recentFileAct = new QAction(this);
+        recentFileAct->setVisible(false);
+        connect(recentFileAct, &QAction::triggered, this, &MainWindow::openRecentFile);
+        ui->menuRecent_files->addAction(recentFileAct);
     }
     updateRecentFileActions();
-    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
-        ui->menuRecent_files->addAction(recentFileActs[i]);
+    for (auto recentFileAct : recentFileActs) {
+        ui->menuRecent_files->addAction(recentFileAct);
     }
 }
 
